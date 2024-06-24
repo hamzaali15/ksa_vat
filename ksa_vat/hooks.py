@@ -1,10 +1,9 @@
 app_name = "ksa_vat"
 app_title = "Ksa Vat"
-app_publisher = "RF"
-app_description = "Ksa Vat"
+app_publisher = "Hamza Ali"
+app_description = "Regional Compliance app for Saudi Arabia"
 app_email = "malikhamzaali48@gmail.com"
-app_license = "mit"
-# required_apps = []
+app_license = "MIT"
 
 # Includes in <head>
 # ------------------
@@ -68,7 +67,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "ksa_vat.install.before_install"
-# after_install = "ksa_vat.install.after_install"
+after_install = "ksa_vat.saudi_arabia.setup.setup"
 
 # Uninstallation
 # ------------
@@ -122,13 +121,21 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Company": {
+		"on_trash": ["ksa_vat.saudi_arabia.utils.delete_vat_settings_for_company"],
+		"after_insert": [
+			"ksa_vat.saudi_arabia.wizard.operations.setup_tax_templates.setup_templates",
+			"ksa_vat.saudi_arabia.setup.create_company_settings"
+		]
+	},
+	"Sales Invoice": {
+		"on_submit": ["ksa_vat.saudi_arabia.utils.create_qr_code",],
+		"on_cancel": ["ksa_vat.saudi_arabia.utils.delete_qr_code_file"]
+	},
+	"POS Invoice": {"on_submit": ["ksa_vat.saudi_arabia.utils.create_qr_code"]},
+
+}
 
 # Scheduled Tasks
 # ---------------
